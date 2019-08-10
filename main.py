@@ -3,7 +3,8 @@ import arcade
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
-img_background = arcade.load_texture('img/background.png')
+img_background = arcade.load_texture('img/background.jpg')
+img_raketa = arcade.load_texture('img/racketa.png')
 
 class Raketa:
     def __init__(self, x, y):
@@ -13,7 +14,7 @@ class Raketa:
         self.dir = 0
 
     def draw(self):
-        arcade.draw_ellipse_filled(self.x, self.y, 40, 60, [200, 0, 0])
+        arcade.draw_texture_rectangle(self.x, self.y, 40, 80, img_raketa)
 
 class Background:
     def __init__(self):
