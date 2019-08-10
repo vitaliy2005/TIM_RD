@@ -10,8 +10,22 @@ class Raketa:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.speed = 3
+        self.dx = 0
+        self.dy = -1
+        # self.speed = 3
         self.dir = 0
+        self.hight = 580 # нужно перевести в мнтры (сейчас в пиксилях)
+
+
+    def move(self):
+        self.x += self.dx
+        self.y += self.dy
+
+    def to_left(self):
+        self.dx -= 0.5
+
+    def to_right(self):
+        self.dx += 0.5
 
     def draw(self):
         arcade.draw_texture_rectangle(self.x, self.y, 40, 80, img_raketa)
@@ -35,7 +49,7 @@ class MyGame(arcade.Window):
     def setup(self):
         # Настроить игру здесь
         self.background = Background()
-        self.raketa = Raketa(200, 300)
+        self.raketa = Raketa(400, 580)
         pass
 
     def on_draw(self):
@@ -47,7 +61,10 @@ class MyGame(arcade.Window):
 
     def update(self, delta_time):
         """ Здесь вся игровая логика и логика перемещения."""
-        pass
+        self.raketa.move()
+
+
+
 
 
 def main():
