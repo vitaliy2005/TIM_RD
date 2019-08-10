@@ -6,6 +6,7 @@ SCREEN_HEIGHT = 600
 img_background = arcade.load_texture('img/background.jpg')
 img_raketa = arcade.load_texture('img/racketa.png')
 
+
 class Raketa:
     def __init__(self, x, y):
         self.x = x
