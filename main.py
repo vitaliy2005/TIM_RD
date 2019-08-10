@@ -23,13 +23,19 @@ class Raketa:
         self.y += self.dy
 
     def to_left(self):
-        self.dx -= 0.5
+        self.dx -= 0.3
 
     def to_right(self):
-        self.dx += 0.5
+        self.dx += 0.3
 
     def draw(self):
         arcade.draw_texture_rectangle(self.x, self.y, 40, 80, img_raketa)
+
+    def power_up(self):
+        self.dy += 0.1
+
+    def power_down(self):
+        self.dy -= 0.1
 
 class Background:
     def __init__(self):
@@ -59,6 +65,15 @@ class MyGame(arcade.Window):
         self.background.draw()
         self.raketa.draw()
         # Здесь код рисунка
+    def on_key_press(self, key: int, modifiers: int):
+        if key == arcade.key.LEFT:
+            self.raketa.to_left()
+        elif key == arcade.key.RIGHT:
+            self.raketa.to_right()
+        elif key == arcade.key.UP:
+            self.raketa.power_up()
+        elif key == arcade.key.DOWN:
+            self.raketa.power_down()
 
     def update(self, delta_time):
         """ Здесь вся игровая логика и логика перемещения."""
