@@ -6,6 +6,8 @@ SCREEN_HEIGHT = 600
 
 img_background = arcade.load_texture('img/background.jpg')
 img_raketa = arcade.load_texture('img/racketa.png')
+img_platform = arcade.load_texture('img/platform.png')
+
 
 class meteor:
     def __init__(self, x, y):
@@ -21,6 +23,8 @@ class Raketa:
         self.y = y
         self.dx = 0
         self.dy = -1
+        self.fuel = 100
+        self.fuel_comp = 0.3
         self.wind_speed = 0
         self.speed = self.dy
         self.dir = 0
@@ -31,15 +35,20 @@ class Raketa:
 
     def update(self):
         self.hight = self.y * 10 - 20
-        self.wind_speed += (random.random() - 0.5) / 2
-
+        self.wind_speed += (random.random() - 0.5) / 1.5
+        self.fuel -= self.fuel_comp
+        if self.fuel <= 0:
+            self.dy = - 10
 
     def get_state(self):
-        if 35 < self.y < 50:
-            if 300 < self.x < 500:
-                return 'down_good'
-            else:
-                return 'cruch'
+        if 300 < self.x < 500:
+            if 40 < self.y < 60:
+                if abs(self.dy) < 1:
+                    return 'down_good'
+                else:
+                    return 'cruch'
+        elif 0 < self.y < 40:
+            return 'cruch'
 
     def move(self):
         if 0 <= self.x <= SCREEN_HEIGHT:
@@ -80,11 +89,11 @@ class Background:
 
     def draw(self):
         arcade.draw_texture_rectangle(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, SCREEN_WIDTH, SCREEN_HEIGHT, img_background)
+        arcade.draw_texture_rectangle(SCREEN_WIDTH / 2, 0, 200, 40, img_platform)
 
 
 class MyGame(arcade.Window):
     """ Главный класс приложения. """
-
     def __init__(self, width, height):
         super().__init__(width, height)
         arcade.set_background_color(arcade.color.AMAZON)
@@ -100,9 +109,10 @@ class MyGame(arcade.Window):
         """ Отрендерить этот экран. """
         arcade.start_render()
         self.background.draw()
+        self.raketa.draw()
+        self.draw_telemetry()
         if self.state == 'run':
-            self.raketa.draw()
-            self.draw_telemetry()
+            pass
         elif self.state == 'game_over':
             arcade.draw_text('разбился!', SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 , [200, 0, 0], 30,
                              width=300, align="center", anchor_x="center", anchor_y="center")
@@ -140,6 +150,7 @@ class MyGame(arcade.Window):
 
     def get_telemetry(self):
         telemetry = 'высота: {}\n'.format(round(self.raketa.hight, 2)) + \
+                    'топливо: {} %\n'.format(round(self.raketa.fuel, 2)) + \
                     'скорость снижения: {}\n'.format(round(self.raketa.dy,2)) + \
                     'dx: {} dy: {}\n'.format(round(self.raketa.dx, 2), round(self.raketa.dy, 2)) + \
                     'ветер: {}\n'.format(round(self.raketa.wind_speed, 2)) + \
@@ -149,8 +160,9 @@ class MyGame(arcade.Window):
 
     def draw_telemetry(self):
         x = 15
-        arcade.draw_point(x, y, [200, 100, 0], 10)
-        arcade.draw_text(self.get_telemetry(), x, y, [200, 0, 0], 20, anchor_x="left", anchor_y="top")
+        y = 480
+        # arcade.draw_point(x, y, [200, 100, 0], 10)
+        arcade.draw_text(self.get_telemetry(), 15, 460, [200, 0, 0], 20, anchor_x="left", anchor_y="top")
 
 
 def main():
