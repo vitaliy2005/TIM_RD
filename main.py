@@ -6,6 +6,9 @@ SCREEN_HEIGHT = 600
 img_background = arcade.load_texture('img/background.jpg')
 img_raketa = arcade.load_texture('img/racketa.png')
 
+class meteor:
+    def __init__(self, x, y):
+        self.x = dx
 
 class Raketa:
     def __init__(self, x, y):
@@ -21,6 +24,9 @@ class Raketa:
     def move(self):
         self.x += self.dx
         self.y += self.dy
+
+    def update(self):
+        self.hight = int(self.y * 10 - 20)
 
     def to_left(self):
         self.dx -= 0.3
@@ -64,7 +70,10 @@ class MyGame(arcade.Window):
         arcade.start_render()
         self.background.draw()
         self.raketa.draw()
+        self.draw_telemetry()
+
         # Здесь код рисунка
+
     def on_key_press(self, key: int, modifiers: int):
         if key == arcade.key.LEFT:
             self.raketa.to_left()
@@ -78,10 +87,15 @@ class MyGame(arcade.Window):
     def update(self, delta_time):
         """ Здесь вся игровая логика и логика перемещения."""
         self.raketa.move()
+        self.raketa.update()
 
+    def get_telemetry(self):
+        telemetry = 'высота: {}\n'.format(self.raketa.hight) + \
+                    'скорость снижения: {}\n'.format(self.raketa.dy)
+        return telemetry
 
-
-
+    def draw_telemetry(self):
+        arcade.draw_text(self.get_telemetry(), 10, 500, [200, 0, 0], 25)
 
 def main():
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
