@@ -5,13 +5,31 @@ SCREEN_HEIGHT = 600
 
 img_background = arcade.load_texture('img/background.jpg')
 img_raketa = arcade.load_texture('img/racketa.png')
+img_meteor = arcade.load_texture('img/meteor.png')
+img_platform = arcade.load_texture('img/platform.png')
 
-class meteor:
+class Platform:
+    def __init__(self, x, y,):
+        self.x = x
+        self.y = y
+
+    def draw(self):
+        arcade.draw_texture_rectangle(self.x, self.y, 60, 10, img_platform)
+
+
+class Meteor:
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.dx = 5
         self.dy = 1
+
+    def move(self):
+        self.x += self.dx
+        self.y += self.dy
+
+    def draw(self):
+        arcade.draw_texture_rectangle(self.x, self.y, 20, 20, img_meteor)
 
 
 class Raketa:
@@ -22,7 +40,7 @@ class Raketa:
         self.dy = -1
         self.speed = self.dy
         self.dir = 0
-        self.hight = 580 # нужно перевести в метры (сейчас в пиксилях)
+        self.hight = 580 # нужно перевести в мнтры (сейчас в пиксилях)
 
     def draw(self):
         arcade.draw_texture_rectangle(self.x, self.y, 40, 80, img_raketa)
@@ -87,6 +105,8 @@ class MyGame(arcade.Window):
         self.state = 'run'  # 'game_over', 'win'
         self.background = Background()
         self.raketa = Raketa(400, 580)
+        self.meteor = Meteor(10, 500)
+
         pass
 
     def on_draw(self):
@@ -94,6 +114,8 @@ class MyGame(arcade.Window):
         arcade.start_render()
         self.background.draw()
         self.raketa.draw()
+        self.meteor.draw()
+
         self.draw_telemetry()
         if self.state == 'run':
             pass
@@ -118,6 +140,7 @@ class MyGame(arcade.Window):
         """ Здесь вся игровая логика и логика перемещения."""
         if self.state == 'run':
             self.raketa.move()
+            self.meteor.move()
             self.raketa.update()
             if self.raketa.get_state() == 'down_good':
                 self.state = 'win'
@@ -126,6 +149,8 @@ class MyGame(arcade.Window):
             pass
         elif self.state == 'win':
             pass
+
+
 
     def get_telemetry(self):
         telemetry = 'высота: {}\n'.format(round(self.raketa.hight, 2)) + \
