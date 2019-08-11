@@ -64,8 +64,8 @@ class Raketa:
         else:
             if self.y < 40:
                 self.y = 40
-            # if self.y > SCREEN_HEIGHT:
-            #     self.y = SCREEN_HEIGHT - 1
+            if self.y > SCREEN_HEIGHT:
+                self.y = SCREEN_HEIGHT
 
     def to_left(self):
         self.dx -= 0.3
