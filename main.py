@@ -5,10 +5,20 @@ SCREEN_HEIGHT = 600
 
 img_background = arcade.load_texture('img/background.jpg')
 img_raketa = arcade.load_texture('img/racketa.png')
+img_meteor = arcade.load_texture('img/meteor.png')
 
 class meteor:
     def __init__(self, x, y):
-        self.x = dx
+        self.x = x
+        self.y = y
+        self.dx = 5
+        self.dy = 1
+
+
+    # def drow(self):
+        # arcade.draw_texture_rectangle(self.x, self.y, 20, 20, img_meteor )
+
+
 
 class Raketa:
     def __init__(self, x, y):
@@ -16,9 +26,10 @@ class Raketa:
         self.y = y
         self.dx = 0
         self.dy = -1
-        # self.speed = 3
+        self.speed = self.dy
         self.dir = 0
         self.hight = 580 # нужно перевести в мнтры (сейчас в пиксилях)
+
 
 
     def move(self):
@@ -36,6 +47,7 @@ class Raketa:
 
     def draw(self):
         arcade.draw_texture_rectangle(self.x, self.y, 40, 80, img_raketa)
+        arcade.draw_texture_rectangle(self.x, self.y, 20, 20, img_meteor)
 
     def power_up(self):
         self.dy += 0.1
