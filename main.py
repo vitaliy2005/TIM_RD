@@ -8,7 +8,15 @@ img_raketa = arcade.load_texture('img/racketa.png')
 
 class meteor:
     def __init__(self, x, y):
-        self.x = dx
+        self.x = x
+        self.y = y
+        self.dx = 5
+        self.dy = 1
+
+
+    # def drow(self):
+        # arcade.draw_texture_rectangle(self.x, self.y, 20, 20, img_meteor )
+
 
 
 class Raketa:
@@ -17,7 +25,7 @@ class Raketa:
         self.y = y
         self.dx = 0
         self.dy = -1
-        # self.speed = 3
+        self.speed = self.dy
         self.dir = 0
         self.hight = 580 # нужно перевести в метры (сейчас в пиксилях)
 
@@ -54,15 +62,18 @@ class Raketa:
     def to_right(self):
         self.dx += 0.3
 
+    def draw(self):
+        arcade.draw_texture_rectangle(self.x, self.y, 40, 80, img_raketa)
+
     def power_up(self):
         self.dy += 0.1
 
     def power_down(self):
         self.dy -= 0.1
 
-
 class Background:
     def __init__(self):
+        # self.img =
         pass
 
     def draw(self):
