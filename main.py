@@ -1,35 +1,18 @@
 import arcade
+import random
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
 img_background = arcade.load_texture('img/background.jpg')
 img_raketa = arcade.load_texture('img/racketa.png')
-img_meteor = arcade.load_texture('img/meteor.png')
-img_platform = arcade.load_texture('img/platform.png')
 
-class Platform:
-    def __init__(self, x, y,):
-        self.x = x
-        self.y = y
-
-    def draw(self):
-        arcade.draw_texture_rectangle(self.x, self.y, 60, 10, img_platform)
-
-
-class Meteor:
+class meteor:
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.dx = 5
         self.dy = 1
-
-    def move(self):
-        self.x += self.dx
-        self.y += self.dy
-
-    def draw(self):
-        arcade.draw_texture_rectangle(self.x, self.y, 20, 20, img_meteor)
 
 
 class Raketa:
@@ -38,23 +21,29 @@ class Raketa:
         self.y = y
         self.dx = 0
         self.dy = -1
+        self.wind_speed = 0
         self.speed = self.dy
         self.dir = 0
-        self.hight = 580 # нужно перевести в мнтры (сейчас в пиксилях)
+        self.hight = 580 # нужно перевести в метры (сейчас в пиксилях)
 
     def draw(self):
         arcade.draw_texture_rectangle(self.x, self.y, 40, 80, img_raketa)
 
     def update(self):
         self.hight = self.y * 10 - 20
+        self.wind_speed += (random.random() - 0.5) / 2
+
 
     def get_state(self):
-        if 35 < self.y < 50 and 300 < self.x < 500:
-            return 'down_good'
+        if 35 < self.y < 50:
+            if 300 < self.x < 500:
+                return 'down_good'
+            else:
+                return 'cruch'
 
     def move(self):
         if 0 <= self.x <= SCREEN_HEIGHT:
-            self.x += self.dx
+            self.x += self.dx + self.wind_speed
         else:
             if self.x < 0:
                 self.x = 0
@@ -105,24 +94,21 @@ class MyGame(arcade.Window):
         self.state = 'run'  # 'game_over', 'win'
         self.background = Background()
         self.raketa = Raketa(400, 580)
-        self.meteor = Meteor(10, 500)
-
         pass
 
     def on_draw(self):
         """ Отрендерить этот экран. """
         arcade.start_render()
         self.background.draw()
-        self.raketa.draw()
-        self.meteor.draw()
-
-        self.draw_telemetry()
         if self.state == 'run':
-            pass
+            self.raketa.draw()
+            self.draw_telemetry()
         elif self.state == 'game_over':
-            pass
+            arcade.draw_text('разбился!', SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 , [200, 0, 0], 30,
+                             width=300, align="center", anchor_x="center", anchor_y="center")
         elif self.state == 'win':
-            arcade.draw_text('Успешная посадка', 400, 450, [200, 0, 0], 30)
+            arcade.draw_text('Успешная посадка', SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2 , [200, 0, 0], 30,
+                             width=300, align="center", anchor_x="center", anchor_y="center")
         # Здесь код рисунка
 
     def on_key_press(self, key: int, modifiers: int):
@@ -131,6 +117,7 @@ class MyGame(arcade.Window):
                 self.raketa.to_left()
             elif key == arcade.key.RIGHT:
                 self.raketa.to_right()
+
             elif key == arcade.key.UP:
                 self.raketa.power_up()
             elif key == arcade.key.DOWN:
@@ -140,28 +127,30 @@ class MyGame(arcade.Window):
         """ Здесь вся игровая логика и логика перемещения."""
         if self.state == 'run':
             self.raketa.move()
-            self.meteor.move()
             self.raketa.update()
             if self.raketa.get_state() == 'down_good':
                 self.state = 'win'
+            elif self.raketa.get_state() == 'cruch':
+                self.state = 'game_over'
 
         elif self.state == 'game_over':
             pass
         elif self.state == 'win':
             pass
 
-
-
     def get_telemetry(self):
         telemetry = 'высота: {}\n'.format(round(self.raketa.hight, 2)) + \
                     'скорость снижения: {}\n'.format(round(self.raketa.dy,2)) + \
                     'dx: {} dy: {}\n'.format(round(self.raketa.dx, 2), round(self.raketa.dy, 2)) + \
+                    'ветер: {}\n'.format(round(self.raketa.wind_speed, 2)) + \
                     'x: {} y: {}\n'.format(round(self.raketa.x, 2), round(self.raketa.y, 2))
 
         return telemetry
 
     def draw_telemetry(self):
-        arcade.draw_text(self.get_telemetry(), 10, 450, [200, 0, 0], 20)
+        x = 15
+        arcade.draw_point(x, y, [200, 100, 0], 10)
+        arcade.draw_text(self.get_telemetry(), x, y, [200, 0, 0], 20, anchor_x="left", anchor_y="top")
 
 
 def main():
