@@ -14,11 +14,6 @@ class meteor:
         self.dy = 1
 
 
-    # def drow(self):
-        # arcade.draw_texture_rectangle(self.x, self.y, 20, 20, img_meteor )
-
-
-
 class Raketa:
     def __init__(self, x, y):
         self.x = x
@@ -142,6 +137,7 @@ class MyGame(arcade.Window):
 
     def draw_telemetry(self):
         arcade.draw_text(self.get_telemetry(), 10, 450, [200, 0, 0], 20)
+
 
 def main():
     game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT)
